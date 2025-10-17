@@ -17,7 +17,10 @@ import { type SQLiteDatabase } from 'expo-sqlite';
 export interface Item {
   id: number;
   name: string;
-  quantity: number;
+  yards: number;
+  ypc: number;
+  receptions: number;
+  tds: number;
 }
 
 /**
@@ -38,7 +41,7 @@ export interface Item {
  */
 export const initDb = async (db: SQLiteDatabase): Promise<void> => {
   await db.execAsync(
-    "CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, quantity INTEGER NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, yards INTEGER NOT NULL, ypc INTEGER NOT NULL, receptions INTEGER NOT NULL, tds INTEGER NOT NULL);"
   );
 };
 
@@ -62,9 +65,12 @@ export const initDb = async (db: SQLiteDatabase): Promise<void> => {
 export const insertItem = async (
   db: SQLiteDatabase,
   name: string,
-  quantity: number
+  yards: number,
+  ypc: number,
+  receptions: number,
+  tds: number,
 ): Promise<void> => {
-  await db.runAsync("INSERT INTO items (name, quantity) VALUES (?, ?);", [name, quantity]);
+  await db.runAsync("INSERT INTO items (name, yards, ypc, receptions, tds) VALUES (?, ?, ?, ? , ?);", [name, yards, ypc, receptions, tds]);
 };
 
 /**
@@ -82,4 +88,52 @@ export const fetchItems = async (db: SQLiteDatabase): Promise<Item[]> => {
   return db.getAllAsync<Item>("SELECT * FROM items;");
 };
 
+/**
+ * Update Item
+ * 
+ * Modifies an existing item in the database.
+ * 
+ * Important: Uses parameterized queries (? placeholders) for security.
+ * This ensures that user input (name, quantity, id) is treated as data, not code,
+ * preventing SQL injection vulnerabilities.
+ * 
+ * Example: If id=3, name="Oranges", and quantity=10, the query becomes:
+ * UPDATE items SET name='Oranges', quantity=10 WHERE id=3;
+ * 
+ * @param db - The SQLite database instance
+ * @param id - The unique identifier of the item to update
+ * @param name - The updated name for the item
+ * @param quantity - The updated quantity for the item
+ * @returns Promise that resolves when the update operation completes
+ */
+export const updateItem = async (
+  db: SQLiteDatabase,
+  id: number,
+  name: string,
+  yards: number,
+  ypc: number,
+  receptions: number,
+  tds: number,
+): Promise<void> => {
+  await db.runAsync("UPDATE items SET name = ?, quantity = ? WHERE id = ?;", [name, yards, ypc, receptions, tds, id]);
+};
+
+/**
+ * Delete Item
+ * 
+ * Removes an item from the database based on its unique identifier.
+ * 
+ * Important: Uses a parameterized query to securely identify which row to delete.
+ * Only the item with the matching `id` will be removed from the table.
+ * 
+ * Example: If id=5, the query becomes:
+ * DELETE FROM items WHERE id=5;
+ * 
+ * @param db - The SQLite database instance
+ * @param id - The unique identifier of the item to delete
+ * @returns Promise that resolves when the delete operation completes
+ */
+export const deleteItem = async (db: SQLiteDatabase, id: number): Promise<void> => {
+  await db.runAsync("DELETE FROM items WHERE id = ?;", [id]);
+};
 
