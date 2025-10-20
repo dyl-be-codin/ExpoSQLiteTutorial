@@ -115,7 +115,7 @@ export const updateItem = async (
   receptions: number,
   tds: number,
 ): Promise<void> => {
-  await db.runAsync("UPDATE items SET name = ?, quantity = ? WHERE id = ?;", [name, yards, ypc, receptions, tds, id]);
+  await db.runAsync( "UPDATE items SET name = ?, yards = ?, ypc = ?, receptions = ?, tds = ? WHERE id = ?;", [name, yards, ypc, receptions, tds, id]);
 };
 
 /**

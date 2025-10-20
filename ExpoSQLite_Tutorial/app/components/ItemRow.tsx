@@ -12,33 +12,20 @@ type Props = {
   onDelete: () => void;
 };
 
-const ItemRow: React.FC<Props> = ({ name, yards, ypc, receptions, tds, onEdit, onDelete}) => {
+const ItemRow: React.FC<Props> = ({ name, yards, ypc, receptions, tds, onEdit, onDelete }) => {
   return (
-    <View style={styles.container}>
-      {/* Left side: Item info */}
-      <View style={styles.info}>
-        <Text style={styles.name} numberOfLines={1}>
-          {name} {yards} {ypc} {receptions} {tds}
-        </Text>
-        
-      </View>
-      {/* Right side: Action icons */}
+    <View style={styles.rowData}>
+      <Text style={styles.cell}>{name}</Text>
+      <Text style={styles.cell}>{yards}</Text>
+      <Text style={styles.cell}>{ypc}</Text>
+      <Text style={styles.cell}>{receptions}</Text>
+      <Text style={styles.cell}>{tds}</Text>
+
       <View style={styles.actions}>
-        <TouchableOpacity
-          onPress={onEdit}
-          accessibilityRole="button"
-          accessibilityLabel={`Edit ${name}`}
-          style={styles.iconButton}
-        >
+        <TouchableOpacity onPress={onEdit} style={styles.iconButton}>
           <MaterialIcons name="edit" size={24} color="#007BFF" />
         </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onDelete}
-          accessibilityRole="button"
-          accessibilityLabel={`Delete ${name}`}
-          style={styles.iconButton}
-        >
+        <TouchableOpacity onPress={onDelete} style={styles.iconButton}>
           <MaterialIcons name="delete" size={24} color="#D32F2F" />
         </TouchableOpacity>
       </View>
@@ -49,18 +36,21 @@ const ItemRow: React.FC<Props> = ({ name, yards, ypc, receptions, tds, onEdit, o
 export default ItemRow;
 
 const styles = StyleSheet.create({
-  container: {
+  rowData: {
     flexDirection: "row",
-    paddingVertical: 12,
-    paddingHorizontal: 14,
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
-  info: { flexShrink: 1 },
-  name: { fontSize: 16, fontWeight: "600" },
-  qty: { fontSize: 14, color: "#666", marginTop: 2 },
-  actions: { flexDirection: "row", gap: 8 },
+  cell: {
+    flex: 1,
+    textAlign: "center",
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 8,
+  },
   iconButton: {
     padding: 4,
   },
